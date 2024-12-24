@@ -11,25 +11,25 @@ CLUSTER_NAME=$(cat cluster-name.txt)
 RBAC_OBJECT='kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: read-only
+  name: role-example
   namespace: default
 rules:
 - apiGroups: [""]
   resources: ["*"]
-  verbs: ["get", "watch", "list"]
+  verbs: ["get", "watch", "list", "delete"]
 ---
 kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: read-only-binding
+  name: role-binding-example
   namespace: default
 roleRef:
   kind: Role
-  name: read-only
+  name: role-example
   apiGroup: rbac.authorization.k8s.io
 subjects:
 - kind: Group
-  name: read-only-group'
+  name: role-group'
 
 
 echo ==========
@@ -56,7 +56,7 @@ echo
 while true; do
     read -p "Do you want to create the aws-auth configmap entry? (y/n)" response
     case $response in
-        [Yy]* ) eksctl create iamidentitymapping --cluster $CLUSTER_NAME --group read-only-group --arn $ROLE_ARN; break;;
+        [Yy]* ) eksctl create iamidentitymapping --cluster $CLUSTER_NAME --group role-group --arn $ROLE_ARN; break;;
         [Nn]* ) break;;
         * ) echo "Response must start with y or n.";;
     esac

@@ -93,6 +93,16 @@ def lambda_handler(_event, _context):
     config.load_kube_config_from_dict(config_dict=kubeconfig)
     v1_api = client.CoreV1Api() # api_client
     ret = v1_api.list_namespaced_pod("default")
+    #return f"There are {len(ret.items)} pods in the default namespace."
+
+    #log result of ret
+    logger.info({len(ret.items)})
+
+    ret = v1_api.delete_namespaced_pod(name="nginx", namespace="default");
+    logger.info('pod deleted')
+
+    ret = v1_api.list_namespaced_pod("default")
+    logger.info({len(ret.items)})
     return f"There are {len(ret.items)} pods in the default namespace."
 
 print(lambda_handler(None, None))
